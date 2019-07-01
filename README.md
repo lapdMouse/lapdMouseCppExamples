@@ -2,9 +2,9 @@
 
 **lapdMouseCppExamples** is a collection of open source software tools and code
 examples that demonstrate how to work with data from the
-[lapdMouse Project](http://lapdmouse.iibi.uiowa.edu/DataRepresentation).
+[Lung anatomy + particle deposition (lapd) mouse archive](https://doi.org/10.25820/9arg-9w56).
 For more information about the lapdMouse project and available data visit
-<http://lapdmouse.iibi.uiowa.edu>. More specifically, the tools and examples
+<https://doi.org/10.25820/9arg-9w56>. More specifically, the tools and examples
 demonstrate how to:
   * Load volumetric images, label maps, meshes, tree structures
   * Link information from multiple files
@@ -200,11 +200,16 @@ command line in a Comma Separated Value (CSV) format.
 Example usage: `./imageLabelStatistics m01_AerosolSub2.vtk  m01_TerminalCompartments.nrrdd`
 
 ## License
+
 **lapdMouseCppExamples** is distributed under [3-clause BSD license](License.txt).
 
 ## Acknowledgements
+
 This work was supported by NIH project R01ES023863.
 
 ## Support
-For support and further information please visit <http://lapdmouse.iibi.uiowa.edu>
-or contact us at http://lapdmouse.iibi.uiowa.edu/Contact.
+
+For support and further information please visit the
+"Lung anatomy + particle deposition (lapd) mouse archive"
+at <https://doi.org/10.25820/9arg-9w56>.
+
