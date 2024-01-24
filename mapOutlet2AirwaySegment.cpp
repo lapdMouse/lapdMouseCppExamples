@@ -27,18 +27,18 @@ int main(int argc, char**argv)
   }
 
   // read airwayOutletsMesh
-  typedef itk::Mesh< float, 3 > MeshType;
+  using MeshType = itk::Mesh< float, 3 >;
   std::string outletMeshFilename = argv[1];
-  typedef itk::MeshFileReader<MeshType> MeshReaderType;
+  using MeshReaderType = itk::MeshFileReader<MeshType>;
   MeshReaderType::Pointer meshReader = MeshReaderType::New();
   meshReader->SetFileName( outletMeshFilename.c_str() );
   meshReader->Update();
   MeshType::Pointer mesh = meshReader->GetOutput();
 
   // read airwayTree
-  typedef itk::SpatialObject<3> SpatialObjectType;
+  using SpatialObjectType = itk::SpatialObject<3>;
   std::string treeFilename = argv[2];
-  typedef itk::SpatialObjectReader<3,float> TreeReaderType;
+  using TreeReaderType = itk::SpatialObjectReader<3,float>;
   TreeReaderType::Pointer treeReader = TreeReaderType::New();
   treeReader->SetFileName( treeFilename );
   treeReader->Update();
@@ -46,9 +46,9 @@ int main(int argc, char**argv)
 
   // iterate over all mesh points and find for each outlet region the set of
   // accociated points
-  typedef MeshType::PointType PointType;
-  typedef std::vector<PointType> MeshPointSet;
-  typedef std::map<unsigned int, MeshPointSet> OutletPointMap;
+  using PointType = MeshType::PointType;
+  using MeshPointSet = std::vector<PointType>;
+  using OutletPointMap = std::map<unsigned int, MeshPointSet>;
   OutletPointMap outletPoints;
   MeshType::PointsContainer::Pointer points = mesh->GetPoints();
   MeshType::PointsContainer::iterator pointIt = points->begin();
@@ -64,7 +64,7 @@ int main(int argc, char**argv)
   }
 
   // for each outlet region, calculate a center point
-  typedef std::map<unsigned int, PointType> OutletCenterMap;
+  using OutletCenterMap = std::map<unsigned int, PointType>;
   OutletCenterMap outletCenters;
   for (OutletPointMap::const_iterator it=outletPoints.begin();
     it!=outletPoints.end(); ++it)
@@ -76,15 +76,15 @@ int main(int argc, char**argv)
       pIt!=points.end(); ++pIt)
       center += pIt->GetVectorFromOrigin();
     center /= points.size();
-    outletCenters[it->first] = center;
+    outletCenters[it->first] = (PointType)center;
   }
 
   // for each outlet center find the closest airway segment
-  typedef std::map<unsigned int, unsigned int> OutletSegmentMap;
+  using OutletSegmentMap = std::map<unsigned int, unsigned int>;
   OutletSegmentMap outletSegmentMap;
   SpatialObjectType::ChildrenListType* segments = tree->GetChildren(
     SpatialObjectType::MaximumDepth, (char*)"VesselTubeSpatialObject");
-  typedef itk::VesselTubeSpatialObject<3> TubeType;
+  using TubeType = itk::TubeSpatialObject<3>;
   for (OutletCenterMap::const_iterator it=outletCenters.begin();
     it!=outletCenters.end(); ++it)
   {
@@ -94,11 +94,11 @@ int main(int argc, char**argv)
       segmentIt!=segments->end(); ++segmentIt)
     {
       TubeType::Pointer segment( dynamic_cast<TubeType*>(segmentIt->GetPointer()) );
-      TubeType::PointListType& pointList = segment->GetPoints();
-      for (TubeType::PointListType::iterator pointIt=pointList.begin();
+      TubeType::TubePointListType& pointList = segment->GetPoints();
+      for (TubeType::TubePointListType::iterator pointIt=pointList.begin();
         pointIt!=pointList.end(); ++pointIt)
       {
-        double distance = (pointIt->GetPosition()-outletCenter).GetNorm();
+        double distance = (pointIt->GetPositionInObjectSpace()-outletCenter).GetNorm();
         if (distance<closestPointDistance)
         {
           closestPointDistance = distance;

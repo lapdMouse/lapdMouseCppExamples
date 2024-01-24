@@ -32,8 +32,8 @@ int main(int argc, char**argv)
   std::string outputFilename = argv[2];
 
   // read spatial objects
-  typedef itk::SpatialObject<3> SpatialObjectType;
-  typedef itk::SpatialObjectReader<3,float> ReaderType;
+  using SpatialObjectType = itk::SpatialObject<3>;
+  using ReaderType = itk::SpatialObjectReader<3,float>;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputFilename );
   reader->Update();
@@ -53,7 +53,7 @@ int main(int argc, char**argv)
   while (segmentIt!=segments->end())
   {
     // cast spatial object to correct subtype
-    typedef itk::VesselTubeSpatialObject<3> TubeType;
+    using TubeType = itk::TubeSpatialObject<3>;
     TubeType::Pointer segment( dynamic_cast<TubeType*>(segmentIt->GetPointer()) );
 
     outfile << "  {" << std::endl;
@@ -62,8 +62,8 @@ int main(int argc, char**argv)
     outfile << "    \"ID\": " << segment->GetId() << "," << std::endl;
 
     // output name of segment if specified
-    if (segment->GetProperty()->GetName()!="")
-      outfile << "    \"Name\": \"" << segment->GetProperty()->GetName() << "\"," << std::endl;
+    if (segment->GetProperty().GetName()!="")
+      outfile << "    \"Name\": \"" << segment->GetProperty().GetName() << "\"," << std::endl;
 
     // output IDs of children
     SpatialObjectType::ChildrenListType* children = segment->GetChildren();//, 0, (char*)"TubeSpatialObject");
@@ -78,28 +78,28 @@ int main(int argc, char**argv)
     delete children;
 
     // get list of centerline points
-    TubeType::PointListType& pointList = segment->GetPoints();
+    TubeType::TubePointListType& pointList = segment->GetPoints();
 
     // output coordinates of centerline points
     outfile << "    \"Coordinates\": [";
-    for (TubeType::PointListType::iterator it=pointList.begin(); it!=pointList.end(); ++it)
+    for (TubeType::TubePointListType::iterator it=pointList.begin(); it!=pointList.end(); ++it)
     {
       if (it!=pointList.begin())
         outfile << ", ";
       outfile << "["
-        << it->GetPosition()[0] << ", "
-        << it->GetPosition()[1] << ", "
-        << it->GetPosition()[2] << "]";
+        << it->GetPositionInObjectSpace()[0] << ", "
+        << it->GetPositionInObjectSpace()[1] << ", "
+        << it->GetPositionInObjectSpace()[2] << "]";
     }
     outfile << "]," << std::endl;
 
     // output radii associated with centerline points
     outfile << "    \"Radii\": [";
-    for (TubeType::PointListType::iterator it=pointList.begin(); it!=pointList.end(); ++it)
+    for (TubeType::TubePointListType::iterator it=pointList.begin(); it!=pointList.end(); ++it)
     {
       if (it!=pointList.begin())
         outfile << ", ";
-      outfile << it->GetRadius();
+      outfile << it->GetRadiusInObjectSpace();
     }
     outfile << "]" << std::endl;
 

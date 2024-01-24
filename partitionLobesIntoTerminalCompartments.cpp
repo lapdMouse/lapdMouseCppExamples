@@ -26,14 +26,14 @@ int main(int argc, char**argv)
   }
 
   // read lobe labelmap and shrink it for faster processing
-  typedef itk::Image< unsigned short, 3 > LabelmapType;
-  typedef LabelmapType::PointType PointType;
-  typedef LabelmapType::IndexType IndexType;
+  using LabelmapType = itk::Image< unsigned short, 3 >;
+  using PointType = LabelmapType::PointType;
+  using IndexType = LabelmapType::IndexType;
   std::string lobesFilename = argv[1];
-  typedef itk::ImageFileReader<LabelmapType> ReaderType;
+  using ReaderType = itk::ImageFileReader<LabelmapType>;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( lobesFilename.c_str() );
-  typedef itk::ShrinkImageFilter< LabelmapType, LabelmapType > ShrinkImageFilterType;
+  using ShrinkImageFilterType = itk::ShrinkImageFilter< LabelmapType, LabelmapType >;
   ShrinkImageFilterType::Pointer shrinkFilter = ShrinkImageFilterType::New();
   unsigned int shrinkfactor[3] = {8,8,8};
   shrinkFilter->SetShrinkFactors( shrinkfactor );
@@ -42,9 +42,9 @@ int main(int argc, char**argv)
   LabelmapType::Pointer lobes = shrinkFilter->GetOutput();
 
   // read airwayTree
-  typedef itk::SpatialObject<3> SpatialObjectType;
+  using SpatialObjectType = itk::SpatialObject<3>;
   std::string treeFilename = argv[2];
-  typedef itk::SpatialObjectReader<3,float> TreeReaderType;
+  using TreeReaderType = itk::SpatialObjectReader<3,float>;
   TreeReaderType::Pointer treeReader = TreeReaderType::New();
   treeReader->SetFileName( treeFilename );
   treeReader->Update();
@@ -52,11 +52,11 @@ int main(int argc, char**argv)
 
   // search terminal airway segments and use their end points as seeds points
   // to partition the lobes into compartments
-  typedef std::map<unsigned int, PointType> TerminalSeedMapType;
+  using TerminalSeedMapType = std::map<unsigned int, PointType>;
   TerminalSeedMapType terminalSeedMap;
   SpatialObjectType::ChildrenListType* segments = tree->GetChildren(
     SpatialObjectType::MaximumDepth, (char*)"VesselTubeSpatialObject");
-  typedef itk::VesselTubeSpatialObject<3> TubeType;
+  using TubeType = itk::TubeSpatialObject<3>;
   for (SpatialObjectType::ChildrenListType::iterator segmentIt = segments->begin();
     segmentIt!=segments->end(); ++segmentIt)
   {
@@ -64,7 +64,7 @@ int main(int argc, char**argv)
     if (segment->GetNumberOfChildren()==0) // terminal segment
     {
       PointType segmentEndPoint =
-        segment->GetPoint(segment->GetNumberOfPoints()-1)->GetPosition();
+        segment->GetPoint(segment->GetNumberOfPoints()-1)->GetPositionInObjectSpace();
       terminalSeedMap[segment->GetId()] = segmentEndPoint;
     }
   }
@@ -79,12 +79,12 @@ int main(int argc, char**argv)
 
   // expand terminal compartment regions starting from seed points based on
   // their distance to the seed point using a priority queue.
-  typedef std::pair<unsigned int, LabelmapType::IndexType> PQDataType;
+  using PQDataType = std::pair<unsigned int, LabelmapType::IndexType>;
   std::map<size_t, PQDataType> PQDataMap;
   size_t PQDataMapElementId = 0;
   std::map<unsigned int, LabelmapType::PixelType> terminalLobeMap;
-  typedef itk::MinPriorityQueueElementWrapper< size_t, double, itk::IdentifierType > PQElementType;
-  typedef itk::PriorityQueueContainer< PQElementType, PQElementType, double, itk::IdentifierType > PQType;
+  using PQElementType = itk::MinPriorityQueueElementWrapper< size_t, double, itk::IdentifierType >;
+  using PQType = itk::PriorityQueueContainer< PQElementType, PQElementType, double, itk::IdentifierType >;
   PQType::Pointer priorityQueue = PQType::New( );
 
   // initialize priority queue
@@ -103,7 +103,7 @@ int main(int argc, char**argv)
     priorityQueue->Push( PQElementType(PQDataMapElementId, distance) );
   }
 
-  typedef itk::NeighborhoodIterator< LabelmapType > NeighborhoodIteratorType;
+  using NeighborhoodIteratorType = itk::NeighborhoodIterator< LabelmapType >;
   NeighborhoodIteratorType nIterator;
   NeighborhoodIteratorType::RadiusType radius;
   radius.Fill( 1 );

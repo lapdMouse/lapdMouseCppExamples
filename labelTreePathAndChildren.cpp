@@ -33,25 +33,25 @@ int main(int argc, char**argv)
   unsigned int segmentId = atoi(argv[3]);
 
   // read airwaySegmentsMesh
-  typedef itk::Mesh< float, 3 > MeshType;
+  using MeshType = itk::Mesh< float, 3 >;
   std::string segmentMeshFilename = argv[1];
-  typedef itk::MeshFileReader<MeshType> MeshReaderType;
+  using MeshReaderType = itk::MeshFileReader<MeshType>;
   MeshReaderType::Pointer meshReader = MeshReaderType::New();
   meshReader->SetFileName( segmentMeshFilename.c_str() );
   meshReader->Update();
   MeshType::Pointer mesh = meshReader->GetOutput();
 
   // read airwayTree
-  typedef itk::SpatialObject<3> SpatialObjectType;
+  using SpatialObjectType = itk::SpatialObject<3>;
   std::string treeFilename = argv[2];
-  typedef itk::SpatialObjectReader<3,float> TreeReaderType;
+  using TreeReaderType = itk::SpatialObjectReader<3,float>;
   TreeReaderType::Pointer treeReader = TreeReaderType::New();
   treeReader->SetFileName( treeFilename );
   treeReader->Update();
   SpatialObjectType::Pointer tree( treeReader->GetGroup() );
 
   // search for segment with user specified ID
-  typedef itk::VesselTubeSpatialObject<3> TubeType;
+  using TubeType = itk::TubeSpatialObject<3>;
   TubeType::Pointer selectedSegment;
   SpatialObjectType::ChildrenListType* segments = tree->GetChildren(
     SpatialObjectType::MaximumDepth, (char*)"VesselTubeSpatialObject");

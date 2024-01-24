@@ -11,6 +11,7 @@ Excel.
 
 // ITK includes
 #include <itkSpatialObject.h>
+#include <itkTubeSpatialObject.h>
 #include <itkSpatialObjectReader.h>
 #include <itkSpatialObjectWriter.h>
 
@@ -26,16 +27,16 @@ int main(int argc, char**argv)
   std::string outputFilename = argv[2];
 
   // read spatial objects
-  typedef itk::SpatialObject<3> SpatialObjectType;
-  typedef itk::SpatialObjectReader<3,float> ReaderType;
+  using SpatialObjectType = itk::SpatialObject<3>;
+  using ReaderType = itk::SpatialObjectReader<3,float>;
   ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName( inputFilename );
   reader->Update();
   SpatialObjectType::Pointer tree( reader->GetGroup() );
 
   // obtain list of tree segments and store in map segmentID -> SpatialObject
-  typedef itk::VesselTubeSpatialObject<3> TubeType;
-  typedef std::map<int, TubeType::Pointer> SegmentMapType;
+  using TubeType = itk::TubeSpatialObject<3>;
+  using SegmentMapType = std::map<int, TubeType::Pointer>;
   SegmentMapType segmentMap;
   SpatialObjectType::ChildrenListType* segments = tree->GetChildren(
     SpatialObjectType::MaximumDepth, (char*)"VesselTubeSpatialObject");
@@ -61,7 +62,7 @@ int main(int argc, char**argv)
     TubeType::Pointer segment = it->second;
 
     // calculate center/radius/direction of segment based on centerline points
-    TubeType::PointListType points = segment->GetPoints();
+    TubeType::TubePointListType points = segment->GetPoints();
     // if parent is an airway segment, add connection point to list of the
     // current segment's points; otherwise segments with only one centerline
     // point would have a length of 0
@@ -73,24 +74,24 @@ int main(int argc, char**argv)
         parent->GetPoints()[segment->GetParentPoint()]);
         //parent->GetPoints()[parent->GetNumberOfPoints()-1]);
     }
-    typedef TubeType::TubePointType::PointType PointType;
-    typedef TubeType::TubePointType::VectorType VectorType;
-    PointType startPoint = points[0].GetPosition();
-    PointType endPoint = points[points.size()-1].GetPosition();
+    using PointType = TubeType::TubePointType::PointType;
+    using VectorType = TubeType::TubePointType::VectorType;
+    PointType startPoint = points[0].GetPositionInObjectSpace();
+    PointType endPoint = points[points.size()-1].GetPositionInObjectSpace();
     PointType center; center.SetToMidPoint(startPoint, endPoint);
     VectorType direction = endPoint-startPoint;
     double length = direction.GetNorm();
     direction /= length;
     double radius = 0;
     for (size_t i=0; i<points.size(); ++i)
-      radius += points[i].GetRadius();
+      radius += points[i].GetRadiusInObjectSpace();
     radius /= double(points.size());
 
     // write segment information
     outfile << segment->GetId() << ","
       << segment->GetParent()->GetId() << ","
       << length << "," << radius << ","
-      << segment->GetProperty()->GetName() << ","
+      << segment->GetProperty().GetName() << ","
       << center[0] << "," << center[1] << "," << center[2] << ","
       << direction[0] << "," << direction[1] << "," << direction[2]
       << std::endl;
