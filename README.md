@@ -24,11 +24,10 @@ Software Guide](https://itk.org/ITK/help/documentation.html).
   * `ITK` (https://itk.org)
 
 Please install the tools suitable for your operating system. The examples have
-been tested on:
+only been tested on:
 
-  * Windows with todo: update
-  * MacOS with todo: update
-  * Linux with gcc version 4.8.4 `CMake` version 3.0.2, `ITK` version 4.10
+  * MacOS with Apple clang v 15.0.0 `CMake` version 3.28.1, `ITK`
+    version 5.3
 
 **Compilation of lapdMouseCppExamples**: First, download and unzip
 `lapdMouseCppExamples`. Then simply configure and build the
@@ -151,7 +150,7 @@ df.head(10) # print the first 10 entries
 
 ### mapOutlet2AirwaySegment
 
-`mapOutlet2AirwaySegment.cpp` shows how to link outlets shored
+`mapOutlet2AirwaySegment.cpp` shows how to link outlets stored
 `AirwaySegments.vtk` to airway segments stored in `AirayTree.meta`. The example
 reads an `AirwayOutletsMesh.vtk` and obtains for each labeled outlet region its
 center of gravity. Then, these are assigned to the airway segments in
@@ -171,10 +170,10 @@ Based on a user specified `segmentId`, the program identified (a) the set of all
  airway segments from the root the specified segment and (b) all of its child
  segments. Then, it assigns appropriate label values to all associated mesh
  vertex point in the input mesh. The resulting labeled mesh is written to
- `highlightedSegmentsMesh.vtk`. The result can get visualized using e.g.
+ a new `.vtk` file. The result can get visualized using e.g.
  [3D Slicer](https://www.slicer.org).
 
-Example usage: `./labelTreePathAndChildren m01_AirwaySegments.vtk m01_AirwayTree.meta 673`
+Example usage: `./labelTreePathAndChildren m01_AirwaySegments.vtk m01_AirwayTree.meta 673 highlightedSegments.vtk`
 
 ### partitionLobesIntoTerminalCompartments
 
@@ -197,7 +196,7 @@ image. It then calculates for each labeled region statistical measurements
 including volume, average gray-value, etc. These values will printed to the
 command line in a Comma Separated Value (CSV) format.
 
-Example usage: `./imageLabelStatistics m01_AerosolSub2.vtk  m01_TerminalCompartments.nrrdd`
+Example usage: `./imageLabelStatistics m01_AerosolSub2.mha  m01_TerminalCompartments.nrrd`
 
 ## License
 
