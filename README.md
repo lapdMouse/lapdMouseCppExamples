@@ -4,7 +4,7 @@
 examples that demonstrate how to work with data from the
 [Lung anatomy + particle deposition (lapd) mouse archive](https://doi.org/10.25820/9arg-9w56).
 For more information about the lapdMouse project and available data visit
-<https://doi.org/10.25820/9arg-9w56>. More specifically, the tools and examples
+our archive at [NIEHS](https://cebs-ext.niehs.nih.gov/cahs/report/lapd/web-download-links/MzNhZGRkZGY5ZWU2OGU1ODgwYWQ4NjA2Njg0M2Q1YzMK). More specifically, the tools and examples
 demonstrate how to:
   * Load volumetric images, label maps, meshes, tree structures
   * Link information from multiple files
@@ -43,7 +43,8 @@ make
 ```
 
 **Example data**: The data utilized in the examples below can be downloaded from
-the [lapdMouse Project](http://lapdmouse.iibi.uiowa.edu/Data)
+the [lapdMouse Project](https://cebs-ext.niehs.nih.gov/cahs/report/lapd/web-download-links/MzNhZGRkZGY5ZWU2OGU1ODgwYWQ4NjA2Njg0M2Q1YzMK)
+
 
 ## Tools and Examples
 
