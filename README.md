@@ -1,11 +1,13 @@
 # lapdMouseCppExamples
 
-**lapdMouseCppExamples** is a collection of open source software tools and code
-examples that demonstrate how to work with data from the
-[Lung anatomy + particle deposition (lapd) mouse archive](https://doi.org/10.25820/9arg-9w56).
-For more information about the lapdMouse project and available data visit
-our archive at [NIEHS](https://cebs-ext.niehs.nih.gov/cahs/report/lapd/web-download-links/). More specifically, the tools and examples
-demonstrate how to:
+**lapdMouseCppExamples** is a collection of open source software tools
+and code examples that demonstrate how to work with data from the [Lung
+anatomy + particle deposition (lapd) mouse
+archive](https://doi.org/10.25820/9arg-9w56).  For more information
+about the lapdMouse project and available data visit our archive at
+[NIEHS](https://lapdmouse.iibi.uiowa.edu). More specifically, the tools
+and examples demonstrate how to:
+
   * Load volumetric images, label maps, meshes, tree structures
   * Link information from multiple files
   * Derive new information
@@ -43,7 +45,7 @@ make
 ```
 
 **Example data**: The data utilized in the examples below can be downloaded from
-the [lapdMouse Project](https://cebs-ext.niehs.nih.gov/cahs/report/lapd/web-download-links/)
+the [lapdMouse Project](https://lapdmouse.iibi.uiowa.edu)
 
 
 ## Tools and Examples
@@ -211,5 +213,5 @@ This work was supported by NIH project R01ES023863.
 
 For support and further information please visit the
 "Lung anatomy + particle deposition (lapd) mouse archive"
-at <https://doi.org/10.25820/9arg-9w56>.
-
+at <https://doi.org/10.25820/9arg-9w56> or our [data
+repository](https://lapdmouse.iibi.uiowa.edu)
